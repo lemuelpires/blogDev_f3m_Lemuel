@@ -58,4 +58,15 @@ export const useUserAuthentication = () =>{
             setError(systemErrorMessage)
         }
     }
+    
+    useEffect(() => {
+        return () => setCancelled(true)
+    }, [])
+
+    return {
+        auth,
+        createUser,
+        error,
+        loading
+    }
 }
