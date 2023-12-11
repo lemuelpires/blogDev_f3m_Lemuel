@@ -16,7 +16,7 @@ const CreatePost = () => {
 
   return (
     <>
-      <div>
+      <div className={styles.create_post}>
         <h2>Nova Postagem</h2>
         <p>Compartilhe sua experiência no mundo desenvolvedor</p>
         <form onSubmit={handlerSubmit}>
