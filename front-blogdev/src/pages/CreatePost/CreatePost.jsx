@@ -1,8 +1,8 @@
 import styles from './CreatePost.module.css'
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useAuthValue } from '../../context/AuthContext'
-import { userInsertDocument } from '../../hooks/userInsertDocument'
+import { useState } from "react";
+import { userInsertDocument } from "../../hooks/userInsertDocument";
+import { useNavigate } from "react-router-dom";
+import { useAuthValue } from "../../context/AuthContext";
 
 const CreatePost = () => {
   const [title, setTitle] = useState("")
@@ -10,30 +10,32 @@ const CreatePost = () => {
   const [body, setBody] = useState("")
   const [tags, setTags] = useState([])
   const [formError, setFormError] = useState("")
+  const { user } = useAuthValue();
 
-  const { user } = useAuthValue()
+  const navigate = useNavigate();
 
-  const navigate = useNavigate()
-
-  const { insertDocument, response } = userInsertDocument("posts")
+  const { insertDocument, response } = userInsertDocument("posts");
 
   const handlerSubmit = (e) => {
-    e.preventDefault()
-    setFormError("")
+    e.preventDefault();
+    setFormError("");
 
+    // validate image
     try {
-      new URL(image)
+      new URL(image);
     } catch (error) {
-      setFormError("A imagem precisa ser uma URL válida")
+      setFormError("A imagem precisa ser uma URL.");
     }
 
-    const tagsArray = tags.split(",").map((tag) => tag.trim().toLowerCase())
+    // create tags array
+    const tagsArray = tags.split(",").map((tag) => tag.trim().toLowerCase());
 
-    if(!title || !image || !tags || !body){
-      setFormError("Por favor, preencha com atenção todos os campos!")
+    // check values
+    if (!title || !image || !tags || !body) {
+      setFormError("Por favor, preencha todos os campos!");
     }
 
-    console.log(tagsArray)
+    console.log(tagsArray);
 
     console.log({
       title,
@@ -41,23 +43,23 @@ const CreatePost = () => {
       body,
       tags: tagsArray,
       uid: user.uid,
-      createBy: user.displayName
-    })
+      createdBy: user.displayName,
+    });
 
-    if (formError) return
+    if(formError) return
 
-    insertDocument(
-      {
-        title,
-        image,
-        body,
-        tags: tagsArray,
-        uid: user.uid,
-        createBy: user.displayName
-      }
-    )
-    navigate("/")
-  }
+    insertDocument({
+      title,
+      image,
+      body,
+      tags: tagsArray,
+      uid: user.uid,
+      createdBy: user.displayName,
+    });
+
+    // redirect to home page
+    navigate("/");
+  };
 
   return (
     <>
@@ -111,7 +113,7 @@ const CreatePost = () => {
           </label>
             {!response.loading && <button className="btn">Criar Postagem</button>}
             {response.loading && <button className="btn" disabled>Postando...</button>}
-            {response.error && <p className='error'>{response.error || formError}</p>}
+            {(response.error || formError) && <p className='error'>{error || formError}</p>}
         </form>
       </div>
     </>
