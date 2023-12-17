@@ -14,7 +14,7 @@ const EditPost = () => {
     const [formError, setFormError] = useState('');
 
     useEffect(() => {
-        if (!documents) return; // Certifique-se de que documents não é null antes de acessar
+        if (!documents) return;
         const post = documents.find((doc) => doc.id === postId);
 
         if (post) {
@@ -34,7 +34,6 @@ const EditPost = () => {
         setFormError('');
 
         if (!window.confirm('Tem certeza de que deseja atualizar esta postagem?')) {
-            // Se o usuário clicar em "Cancelar" na caixa de diálogo, não faça a atualização.
             return;
         }
 
@@ -42,17 +41,16 @@ const EditPost = () => {
             new URL(image);
         } catch (error) {
             setFormError('A imagem precisa ser uma URL.');
-            return;  // Retorna para evitar a execução do restante do código em caso de erro.
+            return;
         }
 
         const tagsArray = tags.split(',').map((tag) => tag.trim().toLowerCase());
 
         if (!title || !image || !tags || !body) {
             setFormError('Por favor, preencha todos os campos!');
-            return;  // Retorna se algum campo estiver vazio.
+            return;
         }
 
-        // O restante do código...
         updateDocument(postId, {
             title,
             image,
@@ -60,9 +58,8 @@ const EditPost = () => {
             tags: tagsArray,
         });
         alert('Postagem atualizada com sucesso!');
-        navigate('/dashboard'); // Redireciona para a página de dashboard.
+        navigate('/dashboard');
     };
-
 
     if (loading) {
         return <p>Loading...</p>;

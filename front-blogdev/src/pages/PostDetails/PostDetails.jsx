@@ -9,12 +9,9 @@ const PostDetails = () => {
   const { document: post, error, loading } = useFetchDocument('posts', postId);
 
   useEffect(() => {
-    // Se quiser fazer algo quando os detalhes da postagem forem carregados, coloque aqui.
-    // Por exemplo, parar a exibição de um spinner de carregamento.
   }, [post, error, loading]);
 
   const handleGoBack = () => {
-    // Use o navigate para voltar à página anterior
     navigate(-1);
   };
 
@@ -40,7 +37,6 @@ const PostDetails = () => {
           <p>Criado por: {post.createdBy}</p>
           <p>Tags: {post.tags.join(', ')}</p>
           <p>Conteúdo: {post.body}</p>
-          {/* Adicione mais elementos conforme necessário */}
           <button onClick={handleGoBack}>Voltar</button>
         </div>
       </div>
