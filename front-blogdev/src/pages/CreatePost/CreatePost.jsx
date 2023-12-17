@@ -19,17 +19,14 @@ const CreatePost = () => {
     e.preventDefault();
     setFormError("");
 
-    // Validate image URL
     try {
       new URL(image);
     } catch (error) {
       setFormError("A imagem precisa ser uma URL.");
     }
 
-    // Create tags array
     const tagsArray = tags.split(",").map((tag) => tag.trim().toLowerCase());
 
-    // Check values
     if (!title || !image || !tags || !body) {
       setFormError("Por favor, preencha todos os campos!");
       return;
@@ -37,7 +34,6 @@ const CreatePost = () => {
 
     if (formError) return;
 
-    // Ensure user is authenticated before accessing properties
     if (user) {
       insertDocument({
         title,
@@ -48,7 +44,6 @@ const CreatePost = () => {
         createdBy: user.displayName,
       });
 
-      // Redirect to home page
       navigate("/");
     }
   };
