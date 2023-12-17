@@ -1,0 +1,134 @@
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { useCRUD } from '../../hooks/useCRUD';
+import { useNavigate } from 'react-router-dom';
+
+const EditPost = () => {
+    const navigate = useNavigate();
+    const { postId } = useParams();
+    const { documents, error, loading, updateDocument } = useCRUD('posts');
+    const [title, setTitle] = useState('');
+    const [image, setImage] = useState('');
+    const [body, setBody] = useState('');
+    const [tags, setTags] = useState([]);
+    const [formError, setFormError] = useState('');
+
+    useEffect(() => {
+        if (!documents) return; // Certifique-se de que documents não é null antes de acessar
+        const post = documents.find((doc) => doc.id === postId);
+
+        if (post) {
+            setTitle(post.title || '');
+            setImage(post.image || '');
+            setBody(post.body || '');
+            setTags((post.tags || []).join(', '));
+        }
+    }, [documents, postId]);
+    const handleUpdate = () => {
+        console.log("Updating post with ID:", postId);
+        console.log("Title:", title);
+        console.log("Image:", image);
+        console.log("Body:", body);
+        console.log("Tags:", tags);
+
+        setFormError('');
+
+        if (!window.confirm('Tem certeza de que deseja atualizar esta postagem?')) {
+            // Se o usuário clicar em "Cancelar" na caixa de diálogo, não faça a atualização.
+            return;
+        }
+
+        try {
+            new URL(image);
+        } catch (error) {
+            setFormError('A imagem precisa ser uma URL.');
+            return;  // Retorna para evitar a execução do restante do código em caso de erro.
+        }
+
+        const tagsArray = tags.split(',').map((tag) => tag.trim().toLowerCase());
+
+        if (!title || !image || !tags || !body) {
+            setFormError('Por favor, preencha todos os campos!');
+            return;  // Retorna se algum campo estiver vazio.
+        }
+
+        // O restante do código...
+        updateDocument(postId, {
+            title,
+            image,
+            body,
+            tags: tagsArray,
+        });
+        alert('Postagem atualizada com sucesso!');
+        navigate('/dashboard'); // Redireciona para a página de dashboard.
+    };
+
+
+    if (loading) {
+        return <p>Loading...</p>;
+    }
+
+    if (error) {
+        return <p>Error: {error}</p>;
+    }
+
+    return (
+        <div>
+            <h2>Editando Post</h2>
+            <form>
+                <label>
+                    <span>Título:</span>
+                    <input
+                        type="text"
+                        name="title"
+                        id="title"
+                        placeholder="Título da postagem"
+                        onChange={(e) => setTitle(e.target.value)}
+                        value={title}
+                        required />
+                </label>
+                <label>
+                    <span>URL da imagem:</span>
+                    <input
+                        type="text"
+                        name="image"
+                        id="image"
+                        placeholder="Endereço da imagem da postagem"
+                        onChange={(e) => setImage(e.target.value)}
+                        value={image}
+                        required />
+                </label>
+                <label>
+                    <span>Conteúdo da Postagem:</span>
+                    <textarea
+                        name="body"
+                        id="body"
+                        placeholder="Insira o conteúdo de sua postagem aqui"
+                        onChange={(e) => setBody(e.target.value)}
+                        value={body}
+                        required>
+                    </textarea>
+                </label>
+                <label>
+                    <span>Tags:</span>
+                    <input
+                        type="text"
+                        name="tags"
+                        id="tags"
+                        placeholder="Insira suas tags separadas por vírgulas"
+                        onChange={(e) => setTags(e.target.value)}
+                        value={tags}
+                        required />
+                </label>
+                {!loading && <button type="button" className="btn" onClick={handleUpdate}>
+                    Atualizar Postagem
+                </button>}
+                {loading && <button className="btn" disabled>Atualizando...</button>}
+                {(error || formError) && <p className='error'>{error || formError}</p>}
+            </form>
+        </div>
+    );
+};
+
+export default EditPost;
+

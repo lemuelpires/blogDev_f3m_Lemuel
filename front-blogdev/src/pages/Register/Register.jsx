@@ -1,47 +1,48 @@
-import React from 'react'
-import { useState, useEffect } from 'react'
-import { userAuthentication } from '../../hooks/userAuthentication'
+import React, { useState, useEffect } from 'react';
+import { userAuthentication } from '../../hooks/userAuthentication';
 
 const Register = () => {
-  //#region Controller Service
-  const [displayName, setDisplayName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [corfirmedPassword, setCorfirmedPassword] = useState('')
-  const [error, setError] = useState('')
+  // #region Controller Service
+  const [displayName, setDisplayName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmedPassword, setConfirmedPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const { createUser, error: authError, loading } = userAuthentication()
+  const { createUser, error: authError, loading } = userAuthentication();
 
-  const handlerSubmit = async (e) => {
-    e.preventDefault()
-    setError('')
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+
     const user = {
       displayName,
       email,
-      password
+      password,
+    };
+
+    if (password !== confirmedPassword) {
+      setError('As senhas precisam ser iguais.');
+      return;
     }
 
-    if (password != corfirmedPassword) {
-      setError('As senhas precisam ser iguais.')
-      return
-    }
+    const res = await createUser(user);
 
-    const res = await createUser(user)
-    
-    console.table(res)
-  }
+    console.table(res);
+  };
 
   useEffect(() => {
     if (authError) {
-      setError(authError)
+      setError(authError);
     }
-  }, [authError])
-  //#endregion
-  //#region View Browser Page
+  }, [authError]);
+  // #endregion
+
+  // #region View Browser Page
   return (
     <div>
-      <h1>Compartilhe suas experiências com outros nomades</h1>
-      <form onSubmit={handlerSubmit}>
+      <h1>Compartilhe suas experiências com outros nômades</h1>
+      <form onSubmit={handleSubmit}>
         <label>
           <span>Nome: </span>
           <input
@@ -50,7 +51,8 @@ const Register = () => {
             required
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
-            placeholder="Entre con seu nomade nome"></input>
+            placeholder="Entre com seu nome de nômade"
+          />
         </label>
         <label>
           <span>E-mail: </span>
@@ -60,7 +62,8 @@ const Register = () => {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Entre com seu e-mail"></input>
+            placeholder="Entre com seu e-mail"
+          />
         </label>
         <label>
           <span>Senha: </span>
@@ -70,25 +73,27 @@ const Register = () => {
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Entre com sua senha"></input>
+            placeholder="Entre com sua senha"
+          />
         </label>
         <label>
           <span>Confirmação: </span>
           <input
             type="password"
-            name="corfirmedPassword"
+            name="confirmedPassword"
             required
-            value={corfirmedPassword}
-            onChange={(e) => setCorfirmedPassword(e.target.value)}
-            placeholder="Entre com sua senha"></input>
+            value={confirmedPassword}
+            onChange={(e) => setConfirmedPassword(e.target.value)}
+            placeholder="Confirme sua senha"
+          />
         </label>
         {!loading && <button className="btn">Cadastrar</button>}
         {loading && <button className="btn" disabled>Aguarde...</button>}
         {error && <p className='error'>{error}</p>}
       </form>
     </div>
-  )
-  //#endregion
-}
+  );
+  // #endregion
+};
 
-export default Register
+export default Register;

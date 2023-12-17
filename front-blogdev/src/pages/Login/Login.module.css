@@ -1,7 +1,25 @@
 .login{
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
     text-align: center;
+    
+}
+.login form{
+    width: 80%;
 }
 
 .login p{
     color: #aaa;
+}
+.button{
+    display:flex;
+    flex-direction:row;
+    align-items: center;
+    color:rgb(72, 71, 71);
+    padding:0.2em .8em 0.2em .72em;
+    font-size: 14px;
+    font-weight: bolder;
+    min-width: 12%;
+    margin:auto;
 }
